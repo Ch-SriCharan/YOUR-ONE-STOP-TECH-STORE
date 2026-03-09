@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOUR ONE STOP TECH STORE</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Space+Grotesk:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <header class="header">
+        <a href="#" class="logo">YOUR ONE STOP TECH STORE</a>
+        <nav class="nav">
+            <a href="#products" class="nav-link active">Products</a>
+            <a href="compare.html" class="nav-link">Compare</a>
+            <a href="#about" class="nav-link">Manifesto</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </nav>
+        <!-- Cart Toggle Button -->
+        <button id="cart-toggle-btn" class="cart-toggle-btn" aria-label="Open Cart">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m12-9l2 9M9 21a1 1 0 11-2 0 1 1 0 012 0zm10 0a1 1 0 11-2 0 1 1 0 012 0z" />
+            </svg>
+            <span id="cart-count" class="cart-count" style="display:none;">0</span>
+        </button>
+    </header>
+    <!-- ============================================================
+         CART PANEL — Stack-based sidebar (slides in from right)
+         Stack operations: push (add), pop (remove last), peek (top item)
+         ============================================================ -->
+    <aside id="cart-panel" class="cart-panel">
+        <div class="cart-panel-header">
+            <h2 class="cart-title">your cart</h2>
+            <button id="cart-close-btn" class="cart-close-btn" aria-label="Close Cart">&#x2715;</button>
+        </div>
+        <!-- PEEK — always shows the current top of the stack -->
+        <p id="peek-display" class="peek-display" style="display:none;"></p>
+        <!-- Stack action buttons -->
+        <div class="cart-actions">
+            <!-- POP: removes the most recently added item -->
+            <button id="remove-last-btn" class="cart-action-btn cart-action-btn--remove" disabled>
+                &#8593; Remove Last
+            </button>
+            <!-- UNDO: re-pushes the last popped item -->
+            <button id="undo-remove-btn" class="cart-action-btn cart-action-btn--undo" disabled>
+                &#8617; Undo Remove
+            </button>
+        </div>
+        <!-- Cart item list — displayed top → bottom of stack -->
+        <p id="cart-empty" class="cart-empty">Your cart is empty.<br>Add some tech!</p>
+        <ul id="cart-items-list" class="cart-items-list"></ul>
+        <div class="cart-footer">
+            <span class="cart-total-label">total</span>
+            <span id="cart-total" class="cart-total-amount">$0.00</span>
+        </div>
+    </aside>
+    <!-- Overlay — click outside cart to close -->
+    <div id="cart-overlay" class="cart-overlay"></div>
+    <main>
+        <!-- HERO SECTION -->
+        <section class="hero">
+            <!-- Left: Big typographic title -->
+            <div class="hero-left">
+                <h1 class="hero-title">
+                    <span class="solid">Defiantly</span>
+                    <span class="outline">High-Tech.</span>
+                </h1>
+            </div>
+
+            <!-- Right: Device icons + tagline -->
+            <div class="hero-right">
+                <div class="hero-icons">
+                    <!-- Smartwatch -->
+                    <div class="hero-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="20" y="16" width="24" height="32" rx="5" ry="5" />
+                            <line x1="26" y1="16" x2="24" y2="10" />
+                            <line x1="38" y1="16" x2="40" y2="10" />
+                            <line x1="26" y1="48" x2="24" y2="54" />
+                            <line x1="38" y1="48" x2="40" y2="54" />
+                            <line x1="20" y1="30" x2="12" y2="30" />
+                            <line x1="29" y1="25" x2="32" y2="32" x2="35" y2="32" />
+                            <polyline points="29,25 32,32 36,32" />
+                        </svg>
+                    </div>
+                    <!-- Laptop -->
+                    <div class="hero-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="10" y="14" width="44" height="28" rx="3" ry="3" />
+                            <line x1="10" y1="42" x2="54" y2="42" />
+                            <path d="M6 48 Q10 42 10 42 L54 42 Q54 42 58 48 Z" />
+                        </svg>
+                    </div>
+                    <!-- Phone/Tablet -->
+                    <div class="hero-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="18" y="8" width="28" height="48" rx="4" ry="4" />
+                            <line x1="29" y1="51" x2="35" y2="51" />
+                            <line x1="18" y1="44" x2="46" y2="44" />
+                            <line x1="18" y1="14" x2="46" y2="14" />
+                        </svg>
+                    </div>
+                    <!-- Headphones -->
+                    <div class="hero-icon">
+                        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 32 C16 20 24 12 32 12 C40 12 48 20 48 32" />
+                            <rect x="10" y="30" width="10" height="16" rx="4" ry="4" />
+                            <rect x="44" y="30" width="10" height="16" rx="4" ry="4" />
+                        </svg>
+                    </div>
+                </div>
+                <p class="hero-subtitle">
+                    Independent gear for delicious setups.<br>
+                    Tech, Audio, Power, Performance.
+                </p>
+            </div>
+        </section>
+
+        <!-- MANIFESTO SECTION -->
+        <section id="about" class="manifesto-section">
+            <div class="manifesto-content">
+                <h2>Where performance<br>takes form</h2>
+                <div class="manifesto-grid">
+                    <div class="manifesto-item">
+                        <h3>Power + Design</h3>
+                        <p>We curate the world's most capable hardware.</p>
+                    </div>
+                </div>
+                <a href="#contact" class="cta-link">let's go ></a>
+            </div>
+        </section>
+
+        <!-- PRODUCTS GRID -->
+        <section id="products" class="products-section">
+            <div class="section-header">
+                <h2>our inventory</h2>
+                <p>join the club</p>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="filter-container">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="mobile">Mobile</button>
+                <button class="filter-btn" data-filter="earphones">Earphones</button>
+                <button class="filter-btn" data-filter="desktop-parts">Desktop Parts</button>
+                <button class="filter-btn" data-filter="laptops">Laptops</button>
+            </div>
+            <div class="product-grid">
+                <!-- ═══════════════════════ iPHONE 16 SERIES ═══════════════════════ -->
+                <!-- iPhone 16 Plus -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.apple.com/iphone-16/" class="product-card" target="_blank">
+                        <img src="assets/iphone 16 plus.png" alt="iPhone 16 Plus" class="card-image">
+                        <div class="card-overlay">
+                            <h3>iPhone 16 Plus</h3>
+                            <p class="price">$899.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="iPhone 16 Plus" data-price="899"
+                        data-img="assets/iphone 16 plus.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- ═══════════════════════ iPHONE 17 SERIES ═══════════════════════ -->
+
+                <!-- iPhone 17 -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.apple.com/iphone/" class="product-card" target="_blank">
+                        <img src="assets/iphone.png" alt="iPhone 17" class="card-image">
+                        <div class="card-overlay">
+                            <h3>iPhone 17</h3>
+                            <p class="price">$799.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="iPhone 17" data-price="799" data-img="assets/iphone.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- iPhone 17 Air -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.apple.com/iphone/" class="product-card" target="_blank">
+                        <img src="assets/iphone 17 air.png" alt="iPhone 17 Air" class="card-image">
+                        <div class="card-overlay">
+                            <h3>iPhone 17 Air</h3>
+                            <p class="price">$899.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="iPhone 17 Air" data-price="899"
+                        data-img="assets/iphone 17 air.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- iPhone 17 Pro -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.apple.com/iphone/" class="product-card" target="_blank">
+                        <img src="assets/iphone 17 pro.png" alt="iPhone 17 Pro" class="card-image">
+                        <div class="card-overlay">
+                            <h3>iPhone 17 Pro</h3>
+                            <p class="price">$999.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="iPhone 17 Pro" data-price="999"
+                        data-img="assets/iphone 17 pro.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- iPhone 17 Pro Max -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.apple.com/iphone/" class="product-card" target="_blank">
+                        <img src="assets/iphone 17 pro.png" alt="iPhone 17 Pro Max" class="card-image">
+                        <div class="card-overlay">
+                            <h3>iPhone 17 Pro Max</h3>
+                            <p class="price">$1,199.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="iPhone 17 Pro Max" data-price="1199"
+                        data-img="assets/iphone 17 pro.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- ═══════════════════════ OnePlus 15 SERIES ═══════════════════════ -->
+
+                <!-- OnePlus 15 -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.oneplus.com/" class="product-card" target="_blank">
+                        <img src="assets/oneplus 15.png" alt="OnePlus 15" class="card-image">
+                        <div class="card-overlay">
+                            <h3>OnePlus 15</h3>
+                            <p class="price">$899.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="OnePlus 15" data-price="899"
+                        data-img="assets/oneplus 15.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- OnePlus 15 Pro -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.oneplus.com/" class="product-card" target="_blank">
+                        <img src="assets/oneplus 15r.png" alt="OnePlus 15 Pro" class="card-image">
+                        <div class="card-overlay">
+                            <h3>OnePlus 15 Pro</h3>
+                            <p class="price">$1,099.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="OnePlus 15 Pro" data-price="1099"
+                        data-img="assets/oneplus 15r.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Nothing Phone (2) -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://nothing.tech/products/phone-2" class="product-card" target="_blank">
+                        <img src="assets/nothing-phone-2.png" alt="Nothing Phone (2)" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Nothing Phone (2)</h3>
+                            <p class="price">$599.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Nothing Phone (2)" data-price="599"
+                        data-img="assets/nothing-phone-2.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- OnePlus 13 -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.oneplus.com/" class="product-card" target="_blank">
+                        <img src="assets/oneplus.png" alt="OnePlus 13" class="card-image">
+                        <div class="card-overlay">
+                            <h3>OnePlus 13</h3>
+                            <p class="price">$799.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="OnePlus 13" data-price="799"
+                        data-img="assets/oneplus.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- ═══════════════════════ SAMSUNG S25 SERIES ═══════════════════════ -->
+
+                <!-- Samsung Galaxy S25 -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.samsung.com/us/smartphones/galaxy-s25/" class="product-card" target="_blank">
+                        <img src="assets/galaxy s25 FE.png" alt="Samsung Galaxy S25" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Samsung Galaxy S25</h3>
+                            <p class="price">$799.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Samsung Galaxy S25" data-price="799"
+                        data-img="assets/galaxy s25 FE.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Samsung Galaxy S25+ -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.samsung.com/us/smartphones/galaxy-s25/" class="product-card" target="_blank">
+                        <img src="assets/galaxy s25 FE.png" alt="Samsung Galaxy S25+" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Samsung Galaxy S25+</h3>
+                            <p class="price">$999.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Samsung Galaxy S25+" data-price="999"
+                        data-img="assets/galaxy s25 FE.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Samsung Galaxy S25 Ultra -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://www.samsung.com/us/smartphones/galaxy-s25-ultra/" class="product-card"
+                        target="_blank">
+                        <img src="assets/samsung galaxy s25 ultra.png" alt="Samsung Galaxy S25 Ultra"
+                            class="card-image">
+                        <div class="card-overlay">
+                            <h3>Samsung Galaxy S25 Ultra</h3>
+                            <p class="price">$1,299.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Samsung Galaxy S25 Ultra" data-price="1299"
+                        data-img="assets/samsung galaxy s25 ultra.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- ═══════════════════════ PIXEL 10 SERIES ═══════════════════════ -->
+
+                <!-- Google Pixel 10 -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://store.google.com/us/category/phones" class="product-card" target="_blank">
+                        <img src="assets/pixel 10.png" alt="Google Pixel 10" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Google Pixel 10</h3>
+                            <p class="price">$799.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Google Pixel 10" data-price="799"
+                        data-img="assets/pixel 10.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Google Pixel 10 Pro -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://store.google.com/us/category/phones" class="product-card" target="_blank">
+                        <img src="assets/pixel 10 pro.png" alt="Google Pixel 10 Pro" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Google Pixel 10 Pro</h3>
+                            <p class="price">$999.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Google Pixel 10 Pro" data-price="999"
+                        data-img="assets/pixel 10 pro.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Google Pixel 10 Pro XL -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://store.google.com/us/category/phones" class="product-card" target="_blank">
+                        <img src="assets/pixel 10 pro.png" alt="Google Pixel 10 Pro XL" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Google Pixel 10 Pro XL</h3>
+                            <p class="price">$1,099.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Google Pixel 10 Pro XL" data-price="1099"
+                        data-img="assets/pixel 10 pro.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Google Pixel 10 Pro Fold -->
+                <div class="product-card-wrap" data-category="mobile">
+                    <a href="https://store.google.com/us/category/phones" class="product-card" target="_blank">
+                        <img src="assets/pixel 10 pro.png" alt="Google Pixel 10 Pro Fold" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Google Pixel 10 Pro Fold</h3>
+                            <p class="price">$1,799.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Google Pixel 10 Pro Fold" data-price="1799"
+                        data-img="assets/pixel 10 pro.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- ═══════════════════════ OTHER PRODUCTS ═══════════════════════ -->
+
+                <!-- MacBook Pro M3 -->
+                <div class="product-card-wrap" data-category="laptops">
+                    <a href="https://www.apple.com/macbook-pro/" class="product-card" target="_blank">
+                        <img src="assets/macbook.png" alt="MacBook Pro M3" class="card-image">
+                        <div class="card-overlay">
+                            <h3>MacBook Pro M3</h3>
+                            <p class="price">$1,599.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="MacBook Pro M3" data-price="1599"
+                        data-img="assets/macbook.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- RTX 5090 -->
+                <div class="product-card-wrap" data-category="desktop-parts">
+                    <a href="https://www.nvidia.com/en-us/geforce/graphics-cards/50-series/" class="product-card"
+                        target="_blank">
+                        <img src="assets/rtx.png" alt="RTX 5090" class="card-image">
+                        <div class="card-overlay">
+                            <h3>RTX 5090</h3>
+                            <p class="price">$1,999.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="RTX 5090" data-price="1999" data-img="assets/rtx.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Nothing Ear (2) -->
+                <div class="product-card-wrap" data-category="earphones">
+                    <a href="https://nothing.tech/products/ear-2" class="product-card" target="_blank">
+                        <img src="assets/nothing-ear.png" alt="Nothing Ear (2)" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Nothing Ear (2)</h3>
+                            <p class="price">$149.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Nothing Ear (2)" data-price="149"
+                        data-img="assets/nothing-ear.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- AirPods 3 Pro -->
+                <div class="product-card-wrap" data-category="earphones">
+                    <a href="https://www.apple.com/airpods-pro/" class="product-card" target="_blank">
+                        <img src="assets/AIrpods 3 pro.png" alt="AirPods 3 Pro" class="card-image">
+                        <div class="card-overlay">
+                            <h3>AirPods 3 Pro</h3>
+                            <p class="price">$249.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="AirPods 3 Pro" data-price="249"
+                        data-img="assets/AIrpods 3 pro.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- IEMs -->
+                <div class="product-card-wrap" data-category="earphones">
+                    <a href="#" class="product-card" target="_blank">
+                        <img src="assets/IEMS.png" alt="IEMs" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Premium IEMs</h3>
+                            <p class="price">$199.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Premium IEMs" data-price="199"
+                        data-img="assets/IEMS.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- HP Victus Gaming Laptop -->
+                <div class="product-card-wrap" data-category="laptops">
+                    <a href="https://www.hp.com/us-en/shop/vwa/laptops/type=Gaming" class="product-card"
+                        target="_blank">
+                        <img src="assets/HP victus gaming laptop.png" alt="HP Victus Gaming Laptop" class="card-image">
+                        <div class="card-overlay">
+                            <h3>HP Victus Gaming Laptop</h3>
+                            <p class="price">$899.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="HP Victus Gaming Laptop" data-price="899"
+                        data-img="assets/HP victus gaming laptop.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Lenovo IdeaPad Slim 3 -->
+                <div class="product-card-wrap" data-category="laptops">
+                    <a href="https://www.lenovo.com/us/en/c/laptops/ideapad/ideapad-slim-series/" class="product-card"
+                        target="_blank">
+                        <img src="assets/lenovo ideapad slim 3.png" alt="Lenovo IdeaPad Slim 3" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Lenovo IdeaPad Slim 3</h3>
+                            <p class="price">$549.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Lenovo IdeaPad Slim 3" data-price="549"
+                        data-img="assets/lenovo ideapad slim 3.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- MSI Katana A17 AI -->
+                <div class="product-card-wrap" data-category="laptops">
+                    <a href="https://www.msi.com/Laptop/Katana-A17-AI" class="product-card" target="_blank">
+                        <img src="assets/MSI katana A17 AI .png" alt="MSI Katana A17 AI" class="card-image">
+                        <div class="card-overlay">
+                            <h3>MSI Katana A17 AI</h3>
+                            <p class="price">$1,199.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="MSI Katana A17 AI" data-price="1199"
+                        data-img="assets/MSI katana A17 AI .png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- MSI Pano RAG M100R Monitor -->
+                <div class="product-card-wrap" data-category="desktop-parts">
+                    <a href="https://www.msi.com/Monitor" class="product-card" target="_blank">
+                        <img src="assets/MSI pano Rag m100r .png" alt="MSI Pano RAG M100R" class="card-image">
+                        <div class="card-overlay">
+                            <h3>MSI Pano RAG M100R</h3>
+                            <p class="price">$1,499.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="MSI Pano RAG M100R" data-price="1499"
+                        data-img="assets/MSI pano Rag m100r .png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+                <!-- Ryzen 9 9950X3D -->
+                <div class="product-card-wrap" data-category="desktop-parts">
+                    <a href="https://www.amd.com/en/products/processors/desktops/ryzen.html" class="product-card"
+                        target="_blank">
+                        <img src="assets/ryzen 9 9950x3d.png" alt="Ryzen 9 9950X3D" class="card-image">
+                        <div class="card-overlay">
+                            <h3>Ryzen 9 9950X3D</h3>
+                            <p class="price">$699.00</p>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn" data-name="Ryzen 9 9950X3D" data-price="699"
+                        data-img="assets/ryzen 9 9950x3d.png">
+                        + Add to Cart
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FAQ SECTION -->
+        <section id="faq" class="faq-section">
+            <h2>frequently asked questions</h2>
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Do you ship internationally?</h3>
+                    <p>Unless you live on Mars, yes. We ship defiantly everywhere.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What is the warranty?</h3>
+                    <p>Standard 2-year warranty on all delectable electronics.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Can I return opened items?</h3>
+                    <p>Only if they haven't been cooked. 30-day return policy applies.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT / FOOTER -->
+        <section id="contact" class="footer-section">
+            <div class="footer-header">
+                <h2>contact us</h2>
+                <p>make your dreams come true</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">home</a>
+                <a href="#products">work</a>
+                <a href="#about">about</a>
+                <a href="mailto:hello@techstore.com">hello@techstore.com</a>
+            </div>
+            <div class="footer-brand">
+                <p>YOUR ONE STOP TECH STORE is a proud member of The Future</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="../src/script.js"></script>
+</body>
+
+</html>
